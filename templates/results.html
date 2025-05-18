@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🧠 Password Test History</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4037;
+        }
+
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1f4037;
+            color: white;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        td.feedback-cell {
+            text-align: left;
+            white-space: pre-line; /* 🔥 pour que \n s'affiche bien */
+            max-width: 350px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>📋 Password Check Results</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>👤 Username</th>
+                <th>📧 Email</th>
+                <th>🔐 Entropy</th>
+                <th>⏱️ Crack Time</th>
+                <th>🟢 Strength</th>
+                <th>📅 Date</th>
+                <th>🧩 Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r.username }}</td>
+                <td>{{ r.email }}</td>
+                <td>{{ "%.2f"|format(r.entropy) }} bits</td>
+                <td>{{ r.crack_time }}</td>
+                <td>{{ r.strength.capitalize() }}</td>
+                <td>{{ r.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="feedback-cell">{{ r.feedback }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
