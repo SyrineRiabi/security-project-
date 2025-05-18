@@ -1,114 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Password Strength Tester</title>
-    
-<!-- Font Awesome CDN (solid icons only) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-pap5FwI+S3uTIc5YQnOoxjsF6vULv1ZReFJFn9Zu3Hu+V3U2q2dp/MtQR+yAX1tYayCMKKKX6MFl0ZyU/jvAFg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Password Strength Tester</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-pap5FwI+S3uTIc5YQnOoxjsF6vULv1ZReFJFn9Zu3Hu+V3U2q2dp/MtQR+yAX1tYayCMKKKX6MFl0ZyU/jvAFg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
 
+  <style>
+    /* Full‐page plexus background */
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      background: url("{{ url_for('static', filename='plexus_background.jpg.jpeg') }}")
+                  no-repeat center/cover fixed;
+    }
 
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #1f4037, #99f2c8);
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
+    /* Two‐column split */
+    .layout {
+      display: flex;
+      height: 100%;
+    }
 
-        @keyframes slideFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    /* Left panel */
+    .info {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      box-sizing: border-box;
+      background: rgba(0,0,0,0.3); /* subtle overlay if you like */
+    }
+    .info img {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .info h1 {
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+    .info p {
+      line-height: 1.5;
+      max-width: 350px;
+      color: #eee;
+    }
 
-        .container {
-            background-color: white;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            animation: slideFadeIn 0.8s ease-out forwards;
-        }
+    /* Right panel */
+    .panel-right {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      box-sizing: border-box;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #1f4037;
-        }
+    /* The white “box” */
+    .container {
+      background-color: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      box-sizing: border-box;
+      animation: slideFadeIn 0.8s ease-out forwards;
+    }
+    @keyframes slideFadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        input[type="text"],
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    height: 45px;               /* Set fixed height */
-    padding: 0 15px;            /* No vertical padding */
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    line-height: 45px;          /* Match line height to height for vertical centering */
-    box-sizing: border-box;     /* Prevent padding from increasing size */
-}
+    .container h2 {
+      margin-top: 0;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #2c3e50;
+      text-align: center;
+    }
 
-input::placeholder {
-    color: #999;
-    font-size: 15px;
-    opacity: 1;
-}
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      font-size: 18px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: calc(100% - 30px);
+      height: 45px;
+      padding: 0 15px 0 40px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4ca1af;
+    }
+    input::placeholder {
+      color: #aaa;
+    }
 
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #4ca1af;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2c3e50;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #1f4037;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #16372f;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f1f1f1;
-            border-radius: 8px;
-            white-space: pre-line;
-            text-align: left;
-            font-size: 14px;
-        }
-    </style>
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 8px;
+      color: #555;
+      font-size: 15px;
+      text-align: left;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      white-space: pre-line;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Password Strength Tester</h1>
-        <form method="POST">
-            <input type="text" name="username" placeholder="Enter username" required>
-            <input type="email" name="email" placeholder="Enter email address" required>
-            <input type="password" name="password" placeholder="Enter password" required>
-            <button type="submit">Check Password</button>
-        </form>        
-        {% if feedback %}
-            <div class="result">{{ feedback }}</div>
-        {% endif %}
+  <div class="layout">
+
+    <!-- LEFT HALF -->
+    <div class="info">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo">
+      <h1>Password Strength Tester</h1>
+      <p>
+        As an IT support company handling sensitive data and high-profile clients,<br>
+        strong password hygiene is essential to our security.<br><br>
+        This tool is designed for all employees to test and improve their passwords,<br>
+        helping us prevent unauthorized access, phishing, and internal misuse.<br><br>
+        Using this tool is mandatory—each team member plays a role in protecting our systems<br>
+        and upholding client trust.
+      </p>
     </div>
+
+    <!-- RIGHT HALF -->
+    <div class="panel-right">
+      <div class="container">
+        <h2><i class="fas fa-shield-alt"></i> Check Your Password</h2>
+        <form method="POST">
+          <div class="input-wrapper">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" name="username" placeholder="Enter Username" required>
+          </div>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" name="email" placeholder="Enter Email Address" required>
+          </div>
+          <div class="input-wrapper">
+            <i class="fas fa-key input-icon"></i>
+            <input type="password" name="password" placeholder="Enter Password" required>
+          </div>
+          <button type="submit"><i class="fas fa-check-circle"></i> Test Password</button>
+        </form>
+        {% if feedback %}
+          <div class="result">{{ feedback }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
 </body>
 </html>
